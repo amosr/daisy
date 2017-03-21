@@ -66,15 +66,19 @@ localsOnly = concatMap go'
       f -> [f]
 
 interestingOnly :: [Tree] -> [Tree]
-interestingOnly = concatMap go'
+interestingOnly = go
  where
+  go [] = []
+  go (t:ts)
+   | interesting' t
+   = t : ts
+   | otherwise
+   = go' t ++ go ts
+
   go' t
    = case t of
       File s ts
-       | any interesting' ts
-       -> [File s ts]
-       | otherwise
-       -> let ts' = interestingOnly ts
+       -> let ts' = go ts
           in  if null ts'
               then []
               else [File s ts']
