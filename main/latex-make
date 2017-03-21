@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# The top-level tex without the .tex extension
+ROOT=${1:-Main}
+# Where latexmk will put the output
+PDF=$ROOT.pdf
+TEX=$ROOT.tex
+# We copy it to a separate output file so we can do an atomic(ish) write
+OUT=out.pdf
+# Where to put the error log
+ERRTMP=.texout
+
+# Create pdf in non-interactive mode so errors don't wait for input
+# The stderr stuff is more or less garbage, so ignore that.
+# Redirect stdout to a file so we can show it only if there's an error
+# Take stdin from /dev/null, so if it does try to be interactive it'll kill itself
+latexmk --view=pdf -halt-on-error 2>/dev/null </dev/null >$ERRTMP
+
+
+# Did it succeed?
+if [ $? -eq 0 ]; then
+  echo
+  echo
+  echo
+  cat $ERRTMP | daisy-filter
+  # Yes, success.
+  # Only copy the new pdf to output if they are different
+  diff $PDF $OUT 2>/dev/null > /dev/null
+  if [ $? -ne 0 ]; then
+    echo
+    echo 'Updated at:'
+    date
+    cp $PDF $OUT
+  fi
+else
+  # No luck - tex error
+  echo
+  echo
+  echo 'Latex error!'
+  echo
+  cat $ERRTMP | daisy-filter
+fi
+
+
+
