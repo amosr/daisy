@@ -1,0 +1,34 @@
+name:                  daisy
+version:               0.0.1
+license:               AllRightsReserved
+author:                Amos Robinson <amos.robinson@gmail.com>
+maintainer:            Amos Robinson <amos.robinson@gmail.com>
+copyright:             (c) 2017 Amos Robinson
+synopsis:              LaTeX error messages
+category:              ?
+cabal-version:         >= 1.8
+build-type:            Simple
+description:           
+
+library
+  build-depends: base
+
+  ghc-options:         -O2
+
+  hs-source-dirs: src
+
+  exposed-modules:
+    Daisy.Filter
+    Daisy.Filter.Flat
+    Daisy.Filter.Print
+    Daisy.Filter.Tree
+    
+executable daisy-filter
+  main-is: daisy-filter.hs
+  hs-source-dirs: main
+
+  build-depends:
+                       daisy
+                     , base
+
+  ghc-options:         -O2
